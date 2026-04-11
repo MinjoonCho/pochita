@@ -29,9 +29,11 @@ export default function StartPage() {
         </div>
         
         {/* Message Area Pattern C focus */}
-        <div className="space-y-4 slide-up w-full px-4">
-          <h1 className="text-[38px] font-semibold text-[var(--pochita-text)] leading-[1.2] tracking-tight">
-            포기한 치타의 타이머
+        <div className="space-y-4 slide-up w-full px-2">
+          <h1 className="whitespace-nowrap text-[clamp(28px,8.1vw,38px)] font-semibold text-[var(--pochita-text)] leading-[1.15] tracking-[-0.05em]">
+            <span className="text-[var(--pochita-orange)]">포</span>기한{" "}
+            <span className="text-[var(--pochita-orange)]">치</span>타의{" "}
+            <span className="text-[var(--pochita-orange)]">타</span>이머
           </h1>
           <p className="text-lg text-[var(--pochita-text-sec)] font-medium tracking-tight">
             죄책감 없는 딴짓의 시작, <br /> 포치타와 함께하세요.
