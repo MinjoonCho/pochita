@@ -54,7 +54,6 @@ export default function CreateGroupPage() {
         <h1 className="text-3xl font-semibold text-[var(--pochita-text)]">
           새 그룹 만들기
         </h1>
-        <p className="text-sm text-[var(--pochita-text-sec)] font-medium mt-3 leading-relaxed">함께 망할 전우들을 위한 기지</p>
       </div>
 
       <div className="flex-1 page-stack slide-up">
