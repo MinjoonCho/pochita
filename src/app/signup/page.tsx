@@ -59,7 +59,7 @@ export default function SignupPage() {
 
       {/* Step 1: Credentials */}
       {step === 1 && (
-        <div className="w-full max-w-sm space-y-3">
+        <div className="w-full max-w-sm space-y-5">
           <input type="email" placeholder="이메일" value={email} onChange={e => setEmail(e.target.value)}
             className="w-full px-5 py-4 rounded-xl text-[15px] font-medium text-[var(--pochita-text)] placeholder-gray-400 outline-none bg-[#F2F4F6] focus:bg-white focus:ring-2 focus:ring-[var(--pochita-orange)] transition-all" />
           <input type="password" placeholder="비밀번호 (6자 이상)" value={pw} onChange={e => setPw(e.target.value)}
@@ -71,7 +71,7 @@ export default function SignupPage() {
           {error && <p className="text-[13px] text-red-500 font-medium pt-1 px-1">{error}</p>}
           
           <button onClick={handleStep1}
-            className="w-full py-4 rounded-xl font-bold text-white text-[16px] transition-all active:scale-[0.98] mt-4"
+            className="w-full py-5 rounded-2xl font-semibold text-white text-[15px] transition-all active:scale-[0.98] mt-4"
             style={{ background: "var(--pochita-orange)" }}>
             다음
           </button>
@@ -100,7 +100,7 @@ export default function SignupPage() {
 
           <div>
              <p className="text-[13px] text-gray-500 font-bold mb-2 px-1">닉네임</p>
-             <input placeholder="단호한 딴짓러" value={nickname} onChange={e => setNickname(e.target.value)}
+             <input placeholder="프로 딴짓러" value={nickname} onChange={e => setNickname(e.target.value)}
                className="w-full px-5 py-4 rounded-xl text-[15px] font-medium text-[var(--pochita-text)] placeholder-gray-400 outline-none bg-[#F2F4F6] focus:bg-white focus:ring-2 focus:ring-[var(--pochita-orange)] transition-all" />
           </div>
 
@@ -150,7 +150,7 @@ export default function SignupPage() {
 
           {error && <p className="text-[13px] text-red-500 font-medium pt-1 px-1">{error}</p>}
           <button onClick={handleRegister}
-            className="w-full py-4 mt-6 rounded-xl font-bold text-white text-[16px] transition-all active:scale-[0.98]"
+            className="w-full py-5 mt-6 rounded-2xl font-semibold text-white text-[15px] transition-all active:scale-[0.98]"
             style={{ background: "var(--pochita-orange)" }}>
             포치타 가입하기
           </button>

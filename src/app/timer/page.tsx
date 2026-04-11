@@ -159,7 +159,7 @@ function TimerContent() {
 
         {/* Stop button */}
         <button onClick={() => setShowStop(true)}
-          className="mt-4 px-8 py-3.5 rounded-2xl font-black text-white text-base transition-all active:scale-95"
+          className="mt-6 px-10 py-5 rounded-3xl font-bold text-white text-[15px] transition-all active:scale-95"
           style={{ background: `linear-gradient(135deg, ${category.color}, var(--pochita-orange-dark))`, boxShadow: `0 8px 24px ${category.color}66` }}>
           🏁 딴짓 끝내기
         </button>
@@ -233,11 +233,11 @@ function TimerContent() {
             <p className="text-sm text-[var(--pochita-text-secondary)] text-center mb-6">
               {formatTimeKorean(elapsed)} 동안 열심히 딴짓했습니다 👏
             </p>
-            <div className="flex gap-3">
-              <button onClick={() => setShowStop(false)} className="flex-1 py-3.5 rounded-xl font-bold bg-[var(--pochita-bg)] text-[var(--pochita-text)] border border-[var(--pochita-border)]">
+            <div className="flex gap-4">
+              <button onClick={() => setShowStop(false)} className="flex-1 py-4 rounded-2xl font-semibold bg-[var(--pochita-bg)] text-[var(--pochita-text)] border border-[var(--pochita-border)]">
                 계속 딴짓
               </button>
-              <button onClick={handleStop} className="flex-1 py-3.5 rounded-xl font-black text-white" style={{ background: `linear-gradient(135deg, ${category.color}, var(--pochita-orange-dark))` }}>
+              <button onClick={handleStop} className="flex-1 py-4 rounded-2xl font-semibold text-white" style={{ background: `linear-gradient(135deg, ${category.color}, var(--pochita-orange-dark))` }}>
                 🏁 종료
               </button>
             </div>
@@ -294,24 +294,24 @@ function TimerContent() {
               </div>
 
               {/* Actions */}
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <button onClick={() => {
                   const text = `🔥 포치타 딴짓 기록\n${user?.nickname}이 ${category.emoji}${category.label}을(를) ${formatTimeKorean(resultSeconds)} 딴짓!\n\n${poem.map(p => `${p.char}: ${p.line}`).join("\n")}\n\n#포치타 #딴짓타이머 #학점멸망전`;
                   navigator.clipboard?.writeText(text);
                 }}
-                  className="w-full py-4 rounded-2xl font-black text-white text-base transition-all active:scale-95"
+                  className="w-full py-5 rounded-3xl font-bold text-white text-[15px] transition-all active:scale-95"
                   style={{ background: `linear-gradient(135deg, ${category.color}, var(--pochita-orange-dark))`, boxShadow: `0 8px 24px ${category.color}66` }}>
                   📤 자랑하기 (공유)
                 </button>
-                <div className="grid grid-cols-2 gap-3">
-                  <button onClick={() => router.push("/groups")} className="py-3.5 rounded-2xl text-sm font-bold border border-[var(--pochita-border)] text-[var(--pochita-text-secondary)] hover:border-[var(--pochita-orange)] hover:text-[var(--pochita-orange)] bg-[var(--pochita-card)] transition-colors">
+                <div className="grid grid-cols-2 gap-4">
+                  <button onClick={() => router.push("/groups")} className="py-4 rounded-2xl text-[14px] font-semibold border border-[var(--pochita-border)] text-[var(--pochita-text-secondary)] hover:border-[var(--pochita-orange)] hover:text-[var(--pochita-orange)] bg-[var(--pochita-card)] transition-colors">
                     🏆 랭킹 보기
                   </button>
-                  <button onClick={() => router.replace("/home")} className="py-3.5 rounded-2xl text-sm font-bold border border-[var(--pochita-border)] text-[var(--pochita-text-secondary)] hover:border-[var(--pochita-orange)] hover:text-[var(--pochita-orange)] bg-[var(--pochita-card)] transition-colors">
+                  <button onClick={() => router.replace("/home")} className="py-4 rounded-2xl text-[14px] font-semibold border border-[var(--pochita-border)] text-[var(--pochita-text-secondary)] hover:border-[var(--pochita-orange)] hover:text-[var(--pochita-orange)] bg-[var(--pochita-card)] transition-colors">
                     🔥 또 딴짓
                   </button>
                 </div>
-                <button onClick={() => router.replace("/home")} className="w-full py-3 text-sm text-[var(--pochita-text-secondary)] hover:text-[var(--pochita-text)] transition-colors">홈으로</button>
+                <button onClick={() => router.replace("/home")} className="w-full py-4 text-[14px] text-[var(--pochita-text-secondary)] hover:text-[var(--pochita-text)] transition-colors">홈으로 돌아가기</button>
               </div>
             </div>
           </div>

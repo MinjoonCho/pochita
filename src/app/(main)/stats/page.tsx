@@ -51,11 +51,11 @@ export default function StatsPage() {
   return (
     <div className="min-h-screen bg-[var(--pochita-bg)] text-[var(--pochita-text)] font-sans pb-20">
       <div className="px-5 pt-10 pb-4">
-        <h1 className="text-[26px] font-black text-[var(--pochita-text)] leading-tight tracking-tight">나의 통계</h1>
+        <h1 className="text-[26px] font-black text-[var(--pochita-text)] leading-snug tracking-tight">나의 통계</h1>
         <p className="text-[13px] text-gray-500 mt-0.5">{user.nickname}의 찬란한 타락 기록</p>
       </div>
 
-      <div className="px-4 space-y-4">
+      <div className="px-4 space-y-5">
         {/* Summary cards */}
         <div className="grid grid-cols-2 gap-3">
           {[
@@ -95,8 +95,8 @@ export default function StatsPage() {
         {/* Category breakdown */}
         {catBreakdown.length > 0 && (
           <div className="rounded-[24px] bg-white border border-gray-200 shadow-sm overflow-hidden">
-            <div className="p-5 pb-2">
-              <p className="text-[15px] font-bold text-[var(--pochita-text)]">카테고리별 딴짓</p>
+            <div className="p-5 pb-3">
+              <p className="text-[15px] font-bold text-[var(--pochita-text)] leading-normal">카테고리별 딴짓</p>
             </div>
             <div className="px-5 pb-5 pt-3 space-y-4">
               {catBreakdown.map(c => (
@@ -119,8 +119,8 @@ export default function StatsPage() {
 
         {/* Achievements */}
         <div className="rounded-[24px] bg-white border border-gray-200 shadow-sm overflow-hidden">
-          <div className="p-5 pb-2 border-b border-gray-100">
-            <p className="text-[15px] font-bold text-[var(--pochita-text)]">업적</p>
+          <div className="p-5 pb-4 border-b border-gray-100">
+            <p className="text-[15px] font-bold text-[var(--pochita-text)] leading-normal">업적</p>
           </div>
           <div>
             {achievements.map((a, i) => (
@@ -144,7 +144,7 @@ export default function StatsPage() {
             <p className="text-[15px] font-bold text-gray-700">아직 딴짓 기록이 없어요</p>
             <p className="text-[13px] text-gray-500 mt-1 mb-5">타이머를 시작해 첫 기록을 남겨보세요</p>
             <button onClick={() => router.push("/home")}
-              className="px-6 py-3 rounded-xl text-[14px] font-bold text-white shadow-sm"
+              className="px-8 py-4 rounded-2xl text-[14px] font-semibold text-white shadow-sm transition-all"
               style={{ background: "var(--pochita-orange)" }}>
               딴짓 시작하기
             </button>

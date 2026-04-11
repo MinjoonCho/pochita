@@ -94,7 +94,7 @@ export default function ProfilePage() {
               {/* Nicckname */}
               <div>
                 <p className="text-[12px] text-gray-500 font-bold mb-1.5 px-1">닉네임</p>
-                <input value={nickname} onChange={e => setNickname(e.target.value)} placeholder="단호한 딴짓러"
+                <input value={nickname} onChange={e => setNickname(e.target.value)} placeholder="프로 딴짓러"
                   className="w-full px-5 py-4 rounded-xl text-[15px] font-medium text-[var(--pochita-text)] placeholder-gray-400 outline-none bg-[#F2F4F6] focus:bg-white focus:ring-2 focus:ring-[var(--pochita-orange)] transition-all" />
               </div>
 
@@ -135,7 +135,7 @@ export default function ProfilePage() {
               </div>
               
               <button onClick={handleSave}
-                className="w-full py-4 mt-2 rounded-xl font-bold text-white text-[16px] transition-all active:scale-[0.98]"
+                className="w-full py-5 mt-4 rounded-2xl font-semibold text-white text-[15px] transition-all active:scale-[0.98]"
                 style={{ background: "var(--pochita-orange)" }}>
                 프로필 저장
               </button>
@@ -177,7 +177,7 @@ export default function ProfilePage() {
               <Image src="/pochita-logo.png" alt="포치타" fill className="object-contain" />
             </div>
             <p className="text-[16px] font-bold mb-0.5" style={{ color: "var(--pochita-orange)" }}>포치타</p>
-            <p className="text-[12px] font-medium text-gray-400">오직 대학생들을 위한 단호한 타이머</p>
+            <p className="text-[12px] font-medium text-gray-400">오직 대학생들을 위한 포기한 치타의 타이머</p>
           </div>
         )}
 
@@ -190,7 +190,7 @@ export default function ProfilePage() {
               { label: "전국 실시간 랭킹", emoji: "🏆", action: () => router.push("/ranking") },
             ].map((item, i) => (
               <button key={item.label} onClick={item.action}
-                className="w-full flex items-center gap-3 px-5 py-4 transition-colors hover:bg-gray-50 active:bg-gray-100 text-left border-b border-gray-100 last:border-b-0">
+                className="w-full flex items-center gap-4 px-5 py-5 transition-colors hover:bg-gray-50 active:bg-gray-100 text-left border-b border-gray-100 last:border-b-0">
                 <span className="text-[20px] w-6 text-center shadow-sm rounded-md bg-gray-50 pb-0.5">{item.emoji}</span>
                 <span className="text-[15px] font-bold text-[var(--pochita-text)] flex-1">{item.label}</span>
                 <span className="text-gray-400 text-lg font-light leading-none mb-1">›</span>
@@ -202,7 +202,7 @@ export default function ProfilePage() {
         {/* Logout */}
         {!editing && (
           <button onClick={handleLogout}
-            className="w-full py-4 mt-2 rounded-[20px] text-[15px] font-bold bg-white text-red-500 border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors">
+            className="w-full py-5 mt-4 rounded-[20px] text-[15px] font-semibold bg-white text-red-500 border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors">
             로그아웃
           </button>
         )}

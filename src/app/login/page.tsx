@@ -33,11 +33,11 @@ export default function LoginPage() {
           <h1 className="text-3xl font-black mb-1" style={{ fontFamily: "'Black Han Sans', sans-serif", color: "var(--pochita-orange)" }}>
             포치타
           </h1>
-          <p className="text-[13px] text-gray-500 font-medium">단호한 대학생 타이머</p>
+          <p className="text-[13px] text-gray-500 font-medium">포기한 치타의 타이머</p>
         </div>
 
         {/* Form Inputs */}
-        <div className="space-y-3 mb-6">
+        <div className="space-y-5 mb-8">
           <input
             type="email" placeholder="이메일" value={email}
             onChange={e => setEmail(e.target.value)}
@@ -56,14 +56,14 @@ export default function LoginPage() {
         {/* Login Button */}
         <button
           onClick={handleLogin} disabled={loading}
-          className="w-full py-4 rounded-xl font-bold text-white text-[16px] transition-all active:scale-[0.98] disabled:opacity-40"
+          className="w-full py-5 rounded-2xl font-semibold text-white text-[15px] transition-all active:scale-[0.98] disabled:opacity-40"
           style={{ background: "var(--pochita-orange)" }}
         >
           {loading ? "로그인 중..." : "로그인"}
         </button>
 
         {/* Divider */}
-        <div className="flex items-center gap-3 my-8">
+        <div className="flex items-center gap-4 my-10">
           <div className="flex-1 h-[1px] bg-gray-100" />
           <span className="text-[12px] font-medium text-gray-400">계정이 없으신가요?</span>
           <div className="flex-1 h-[1px] bg-gray-100" />
@@ -72,7 +72,7 @@ export default function LoginPage() {
         {/* Signup Link */}
         <button
           onClick={() => router.push("/signup")}
-          className="w-full py-4 rounded-xl font-bold text-[16px] border border-gray-200 text-gray-700 bg-white hover:bg-gray-50 active:bg-gray-100 transition-colors"
+          className="w-full py-5 rounded-2xl font-semibold text-[15px] border border-gray-200 text-gray-700 bg-white hover:bg-gray-50 active:bg-gray-100 transition-colors"
         >
           회원가입
         </button>
