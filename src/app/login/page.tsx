@@ -1,81 +1,72 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { AuthStore } from "@/lib/store";
+import { useRedirectIfAuth } from "@/lib/hooks";
+import { isUserProfileIncomplete } from "@/lib/types";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [pw, setPw] = useState("");
+  useRedirectIfAuth();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
-    if (!email || !pw) { setError("이메일과 비밀번호를 입력해주세요."); return; }
-    setLoading(true);
-    setTimeout(() => {
-      const user = AuthStore.login(email, pw);
-      if (user) { router.replace("/home"); }
-      else { setError("이메일 또는 비밀번호가 올바르지 않습니다."); setLoading(false); }
-    }, 400);
+  const nextPath = typeof window === "undefined"
+    ? "/home"
+    : new URLSearchParams(window.location.search).get("next") ?? "/home";
+
+  const handleGoogleLogin = async () => {
+    try {
+      setLoading(true);
+      setError("");
+      const user = await AuthStore.loginWithGoogle();
+      router.replace(isUserProfileIncomplete(user) ? "/signup/detail?completeProfile=1" : nextPath);
+    } catch (googleError) {
+      setError(googleError instanceof Error ? googleError.message : "구글 로그인에 실패했어요.");
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-6">
-      <div className="w-full max-w-sm flex flex-col pb-10">
-        
-        {/* Logo and Title */}
-        <div className="mb-12 text-center">
-          <div className="relative w-20 h-20 mx-auto mb-4">
-            <Image src="/pochita-logo.png" alt="포치타" fill className="object-contain" />
-          </div>
-          <h1 className="text-3xl font-black mb-1" style={{ fontFamily: "'Black Han Sans', sans-serif", color: "var(--pochita-orange)" }}>
-            포치타
-          </h1>
-          <p className="text-[13px] text-gray-500 font-medium">포기한 치타의 타이머</p>
+    <div className="min-h-screen bg-[var(--pochita-bg)] flex flex-col items-center justify-between page-shell pt-24 pb-14 fade-in">
+      <div className="flex flex-col items-center text-center w-full">
+        <div className="relative w-24 h-24 mb-6">
+          <Image src="/pochita_logo.svg" alt="Pochita" fill className="object-contain" />
         </div>
+        <h2 className="text-2xl font-semibold text-[var(--pochita-text)] mb-2">
+          로그인
+        </h2>
+        <p className="text-sm text-[var(--pochita-text-sec)] font-medium leading-relaxed">
+          반가워요! 다시 딴짓을 시작해볼까요?
+        </p>
+      </div>
 
-        {/* Form Inputs */}
-        <div className="space-y-5 mb-8">
-          <input
-            type="email" placeholder="이메일" value={email}
-            onChange={e => setEmail(e.target.value)}
-            onKeyDown={e => e.key === "Enter" && handleLogin()}
-            className="w-full px-5 py-4 rounded-xl text-[15px] font-medium text-[var(--pochita-text)] placeholder-gray-400 outline-none bg-[#F2F4F6] focus:bg-white focus:ring-2 focus:ring-[var(--pochita-orange)] transition-all"
-          />
-          <input
-            type="password" placeholder="비밀번호" value={pw}
-            onChange={e => setPw(e.target.value)}
-            onKeyDown={e => e.key === "Enter" && handleLogin()}
-            className="w-full px-5 py-4 rounded-xl text-[15px] font-medium text-[var(--pochita-text)] placeholder-gray-400 outline-none bg-[#F2F4F6] focus:bg-white focus:ring-2 focus:ring-[var(--pochita-orange)] transition-all"
-          />
-          {error && <p className="text-[13px] text-red-500 font-medium pt-1 px-1">{error}</p>}
-        </div>
-
-        {/* Login Button */}
+      <div className="w-full block-stack slide-up">
+        {/* Google Login Placeholder */}
         <button
-          onClick={handleLogin} disabled={loading}
-          className="w-full py-5 rounded-2xl font-semibold text-white text-[15px] transition-all active:scale-[0.98] disabled:opacity-40"
-          style={{ background: "var(--pochita-orange)" }}
+          onClick={handleGoogleLogin}
+          disabled={loading}
+          className="w-full py-4.5 rounded-[22px] border border-[var(--pochita-border)] bg-white flex items-center justify-center gap-3 font-semibold text-sm active:scale-98 transition-all shadow-sm"
         >
-          {loading ? "로그인 중..." : "로그인"}
+          <span className="text-lg">🌐</span> {loading ? "구글 계정 확인 중..." : "구글로 로그인"}
         </button>
 
-        {/* Divider */}
-        <div className="flex items-center gap-4 my-10">
-          <div className="flex-1 h-[1px] bg-gray-100" />
-          <span className="text-[12px] font-medium text-gray-400">계정이 없으신가요?</span>
-          <div className="flex-1 h-[1px] bg-gray-100" />
-        </div>
-
-        {/* Signup Link */}
+        {/* ID/PW Login */}
         <button
-          onClick={() => router.push("/signup")}
-          className="w-full py-5 rounded-2xl font-semibold text-[15px] border border-gray-200 text-gray-700 bg-white hover:bg-gray-50 active:bg-gray-100 transition-colors"
+          onClick={() => router.push(nextPath === "/home" ? "/login/detail" : `/login/detail?next=${encodeURIComponent(nextPath)}`)}
+          className="w-full py-4.5 rounded-[22px] bg-[var(--pochita-text)] text-white flex items-center justify-center gap-3 font-semibold text-sm active:scale-98 transition-all shadow-sm"
         >
-          회원가입
+          <span className="text-lg">👤</span> 아이디/비밀번호 로그인
         </button>
+
+        {error && <p className="text-sm text-red-500 font-semibold px-1">{error}</p>}
+
+        <div className="pt-3 text-center">
+          <button onClick={() => router.push(nextPath === "/home" ? "/signup" : `/signup?next=${encodeURIComponent(nextPath)}`)} className="text-xs text-[var(--pochita-text-sec)] underline underline-offset-4">
+            계정이 없으신가요? 회원가입
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -1,12 +1,10 @@
 export const CATEGORIES = [
-  { id: "game",      emoji: "🎮", label: "게임",       color: "#FF4444", description: "롤, 배그, 스팀…" },
-  { id: "shortform", emoji: "📱", label: "숏폼",       color: "#FF6B00", description: "릴스, 틱톡, 쇼츠" },
-  { id: "ott",       emoji: "📺", label: "OTT",        color: "#E50914", description: "넷플, 왓챠, 티빙" },
-  { id: "community", emoji: "💬", label: "커뮤니티",   color: "#FF8C00", description: "에브리타임, 에펨코" },
-  { id: "drink",     emoji: "🍺", label: "술 마시기",  color: "#FFB800", description: "홈술, 편의점 치맥" },
-  { id: "fandom",    emoji: "💜", label: "덕질",       color: "#8B5CF6", description: "아이돌, 웹툰, 소설" },
-  { id: "hangout",   emoji: "👥", label: "친구랑 놀기",color: "#10B981", description: "카페, 당구장, 노래방" },
-  { id: "lazy",      emoji: "😴", label: "무기력",     color: "#6B7280", description: "그냥 누워있기" },
+  { id: "game",      emoji: "🎮", label: "게임",       color: "#FF4444", description: "페이커도 가끔 공부하듯이 저희도 가끔 게임하는 거죠" },
+  { id: "shortform", emoji: "📱", label: "숏폼",       color: "#FF6B00", description: "댓글에 '포치타' 남겨주시면 DM 보내드리겠습니다" },
+  { id: "ott",       emoji: "📺", label: "OTT",        color: "#E50914", description: "벚꽃도 졌겠다, 환연 다시 정주행 할까요" },
+  { id: "drink",     emoji: "🍺", label: "음주",       color: "#FFB800", description: "복소사 한 잔 어떠세요" },
+  { id: "hangout",   emoji: "👥", label: "친구랑 놀기",color: "#10B981", description: "혼자 망할 수는 없다" },
+  { id: "lazy",      emoji: "😴", label: "무기력",     color: "#6B7280", description: "하면서 이 사이트는 또 잘 들어오셨네요" },
 ] as const;
 
 export type CategoryId = typeof CATEGORIES[number]["id"];
@@ -26,7 +24,7 @@ export const SNARKY_MESSAGES = [
 
 export const FOCUS_OUT_MESSAGES = [
   "공부하러 가시는 거 아니죠? 딴짓 마저 하세요! 🔥",
-  "잠깐, 도망가지 말고 더 타락하세요 😤",
+  "잠깐, 도망가지 말고 더 딴짓하세요 😤",
   "어디 가세요?? 아직 더 눌러야죠 📱",
   "포치타가 지켜보고 있습니다 👀",
   "지금 공부하면 진다! 돌아와요~ 🙏",
@@ -74,7 +72,7 @@ export function generateAcrosticPoem(
     [
       { char: "포", line: `포기한 순간부터 시작되는 진짜 인생` },
       { char: "치", line: `치열하게 ${categoryLabel}한 ${timeStr}의 역사` },
-      { char: "타", line: `타락의 끝에서 빛나는 당신의 자유` },
+      { char: "타", line: `타이머 끝에서도 빛나는 당신의 자유` },
     ],
     [
       { char: "포", line: `포기가 패배가 아닌 용기임을 알았다` },
@@ -84,7 +82,7 @@ export function generateAcrosticPoem(
     [
       { char: "포", line: `포기란 새로운 시작의 다른 이름` },
       { char: "치", line: `치열한 딴짓으로 쌓은 ${timeStr}의 내공` },
-      { char: "타", line: `타락했지만 후회 없는 오늘이 좋다` },
+      { char: "타", line: `타이밍 좋게 쉬어간 오늘이 좋다` },
     ],
   ];
   return sets[Math.floor(Math.random() * sets.length)];

@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Pochita Frontend
 
-## Getting Started
+Next.js frontend for the Pochita distraction-tracking app. The app now talks to the Spring backend in [/Users/minjooncho/SandBox/pochita-server](/Users/minjooncho/SandBox/pochita-server).
 
-First, run the development server:
+## Stack
+
+- Next.js 16 App Router
+- React 19
+- Tailwind CSS 4
+
+## Environment
+
+Create `.env.local` from [.env.example](/Users/minjooncho/SandBox/pochita/.env.example):
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp /Users/minjooncho/SandBox/pochita/.env.example /Users/minjooncho/SandBox/pochita/.env.local
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Default API target:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8080/api
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Run
 
-## Learn More
+Start the backend:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+cd /Users/minjooncho/SandBox/pochita
+npm run backend:start
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Start the frontend:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+cd /Users/minjooncho/SandBox/pochita
+npm run dev
+```
 
-## Deploy on Vercel
+Health-check the backend:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+cd /Users/minjooncho/SandBox/pochita
+npm run backend:health
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Useful Scripts
+
+- `npm run dev`: frontend dev server
+- `npm run dev:web`: same as `dev`
+- `npm run backend:start`: starts Spring backend with `gradlew`, `gradle`, or Docker fallback
+- `npm run backend:health`: calls `/api/health`
+- `npm run lint`: ESLint
+- `npm run build:webpack`: production build without Turbopack
+
+## Notes
+
+- In this workspace, plain `next build` may fail because Turbopack hits sandbox process/port restrictions.
+- `npm run build:webpack` is the reliable production verification path here.
+- For Docker deployment of frontend + backend together, see [DEPLOY.md](/Users/minjooncho/SandBox/DEPLOY.md).
+- For production deployment on Vercel + Railway, see [DEPLOY_VERCEL_RAILWAY.md](/Users/minjooncho/SandBox/DEPLOY_VERCEL_RAILWAY.md).

@@ -1,181 +1,187 @@
-// ==============================
-// LocalStorage Data Store
-// ==============================
-import type { User, Session, Group, GroupMember, ActiveTimer } from "./types";
+import { api } from "./api";
+import { signInWithGoogle } from "./google-auth";
+import type { ActiveTimer, Session, User } from "./types";
 
-const KEYS = {
-  USERS: "pochita_users",
+export const KEYS = {
   CURRENT_USER: "pochita_current_user",
-  SESSIONS: "pochita_sessions",
-  GROUPS: "pochita_groups",
-  GROUP_MEMBERS: "pochita_group_members",
   ACTIVE_TIMER: "pochita_active_timer",
-};
+  DATA_VERSION: "pochita_data_version",
+} as const;
 
-function get<T>(key: string): T[] {
-  if (typeof window === "undefined") return [];
-  try {
-    return JSON.parse(localStorage.getItem(key) ?? "[]") as T[];
-  } catch {
-    return [];
-  }
+const STORE_CHANGE_EVENT = "pochita-store-change";
+const rawCache = new Map<string, string | null>();
+
+function canUseStorage(): boolean {
+  return typeof window !== "undefined";
 }
 
-function set<T>(key: string, data: T[]): void {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(key, JSON.stringify(data));
+function readRaw(key: string): string | null {
+  if (!canUseStorage()) return null;
+  if (rawCache.has(key)) return rawCache.get(key) ?? null;
+  const value = localStorage.getItem(key);
+  rawCache.set(key, value);
+  return value;
+}
+
+function writeRaw(key: string, value: string | null): void {
+  if (!canUseStorage()) return;
+  rawCache.set(key, value);
+  if (value === null) localStorage.removeItem(key);
+  else localStorage.setItem(key, value);
+  window.dispatchEvent(new Event(STORE_CHANGE_EVENT));
 }
 
 function getSingle<T>(key: string): T | null {
-  if (typeof window === "undefined") return null;
   try {
-    const v = localStorage.getItem(key);
-    return v ? (JSON.parse(v) as T) : null;
+    const raw = readRaw(key);
+    return raw ? (JSON.parse(raw) as T) : null;
   } catch {
     return null;
   }
 }
 
 function setSingle<T>(key: string, data: T | null): void {
-  if (typeof window === "undefined") return;
-  if (data === null) localStorage.removeItem(key);
-  else localStorage.setItem(key, JSON.stringify(data));
+  writeRaw(key, data === null ? null : JSON.stringify(data));
 }
 
-// Simple hash for demo purposes
-function hashPassword(pw: string): string {
-  let hash = 0;
-  for (let i = 0; i < pw.length; i++) {
-    const char = pw.charCodeAt(i);
-    hash = (hash << 5) - hash + char;
-    hash = hash & hash;
-  }
-  return hash.toString(36);
+function bumpDataVersion(): void {
+  const current = Number(readRaw(KEYS.DATA_VERSION) ?? "0");
+  writeRaw(KEYS.DATA_VERSION, String(current + 1));
 }
 
-function generateId(): string {
-  return Math.random().toString(36).substring(2, 10) + Date.now().toString(36);
+export function subscribeToStore(onChange: () => void): () => void {
+  if (!canUseStorage()) return () => undefined;
+
+  const handleChange = () => {
+    rawCache.clear();
+    onChange();
+  };
+
+  window.addEventListener(STORE_CHANGE_EVENT, handleChange);
+  window.addEventListener("storage", handleChange);
+
+  return () => {
+    window.removeEventListener(STORE_CHANGE_EVENT, handleChange);
+    window.removeEventListener("storage", handleChange);
+  };
 }
 
-function generateInviteCode(): string {
-  return Math.random().toString(36).substring(2, 8).toUpperCase();
+export function getRawSnapshot(key: string): string | null {
+  return readRaw(key);
 }
 
-// ---- Auth ----
+function normalizeEmail(email: string): string {
+  return email.trim().toLowerCase();
+}
+
+function isMissingUserError(error: unknown): boolean {
+  return error instanceof Error && error.message.includes("사용자를 찾을 수 없습니다.");
+}
+
 export const AuthStore = {
-  register(email: string, password: string, profile: Omit<User, "id" | "email" | "passwordHash" | "createdAt">): User | null {
-    const users = get<User>(KEYS.USERS);
-    if (users.find((u) => u.email === email)) return null;
-    const user: User = {
-      id: generateId(),
-      email,
-      passwordHash: hashPassword(password),
-      createdAt: Date.now(),
+  async register(
+    email: string,
+    password: string,
+    profile: Pick<User, "nickname" | "university" | "major" | "year" | "avatarEmoji">
+  ): Promise<User> {
+    const user = await api.register({
+      email: normalizeEmail(email),
+      password,
       ...profile,
-    };
-    set(KEYS.USERS, [...users, user]);
+    });
+    setSingle(KEYS.CURRENT_USER, user);
+    bumpDataVersion();
     return user;
   },
 
-  login(email: string, password: string): User | null {
-    // Test account injection
-    if ((email === "test@test.com" || email === "test") && password === "123456") {
-      const users = get<User>(KEYS.USERS);
-      let user = users.find((u) => u.email === "test@test.com");
-      if (!user) {
-        user = {
-          id: "test", email: "test@test.com", passwordHash: hashPassword(password),
-          nickname: "테스트계정", university: "포치타대학교", year: "4학년", avatarEmoji: "🦊", createdAt: Date.now()
-        };
-        set(KEYS.USERS, [...users, user]);
-      }
-      setSingle(KEYS.CURRENT_USER, user);
-      return user;
-    }
+  async login(email: string, password: string): Promise<User> {
+    const user = await api.login({ email: normalizeEmail(email), password });
+    setSingle(KEYS.CURRENT_USER, user);
+    bumpDataVersion();
+    return user;
+  },
 
-    const users = get<User>(KEYS.USERS);
-    const user = users.find((u) => u.email === email && u.passwordHash === hashPassword(password));
-    if (user) {
-      setSingle(KEYS.CURRENT_USER, user);
-      return user;
-    }
-    return null;
+  async loginWithGoogle(): Promise<User> {
+    const user = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
+      ? await signInWithGoogle().then((profile) =>
+          api.loginWithGoogleProfile({
+            email: normalizeEmail(profile.email),
+            name: profile.name,
+            googleId: profile.sub,
+          })
+        )
+      : await api.loginWithGoogleDemo();
+
+    setSingle(KEYS.CURRENT_USER, user);
+    bumpDataVersion();
+    return user;
   },
 
   logout(): void {
     setSingle(KEYS.CURRENT_USER, null);
     setSingle(KEYS.ACTIVE_TIMER, null);
+    bumpDataVersion();
   },
 
   getCurrentUser(): User | null {
     return getSingle<User>(KEYS.CURRENT_USER);
   },
 
-  updateCurrentUser(updates: Partial<User>): User | null {
-    const current = getSingle<User>(KEYS.CURRENT_USER);
-    if (!current) return null;
-    const updated = { ...current, ...updates };
-    const users = get<User>(KEYS.USERS).map((u) => (u.id === updated.id ? updated : u));
-    set(KEYS.USERS, users);
-    setSingle(KEYS.CURRENT_USER, updated);
-    return updated;
+  async refreshCurrentUser(): Promise<User | null> {
+    const currentUser = getSingle<User>(KEYS.CURRENT_USER);
+    if (!currentUser) return null;
+
+    try {
+      const user = await api.getUser(currentUser.id);
+      setSingle(KEYS.CURRENT_USER, user);
+      return user;
+    } catch {
+      setSingle(KEYS.CURRENT_USER, null);
+      setSingle(KEYS.ACTIVE_TIMER, null);
+      bumpDataVersion();
+      return null;
+    }
   },
 
-  getUserById(id: string): User | null {
-    const users = get<User>(KEYS.USERS);
-    return users.find((u) => u.id === id) ?? null;
-  },
+  async updateCurrentUser(updates: Pick<User, "nickname" | "university" | "major" | "year" | "avatarEmoji">): Promise<User | null> {
+    const currentUser = getSingle<User>(KEYS.CURRENT_USER);
+    if (!currentUser) return null;
 
-  getAllUsers(): User[] {
-    return get<User>(KEYS.USERS);
+    try {
+      const user = await api.updateUser(currentUser.id, updates);
+      setSingle(KEYS.CURRENT_USER, user);
+      bumpDataVersion();
+      return user;
+    } catch (error) {
+      if (isMissingUserError(error)) {
+        setSingle(KEYS.CURRENT_USER, null);
+        setSingle(KEYS.ACTIVE_TIMER, null);
+        bumpDataVersion();
+        throw new Error("로그인 정보가 만료되었어요. 다시 로그인해주세요.");
+      }
+
+      throw error;
+    }
   },
 };
 
-// ---- Sessions ----
 export const SessionStore = {
-  create(userId: string, categoryId: string): Session {
-    const session: Session = {
-      id: generateId(),
+  async create(userId: string, categoryId: string): Promise<Session> {
+    const session = await api.startSession({
       userId,
       categoryId,
-      startTime: Date.now(),
-    };
-    const sessions = get<Session>(KEYS.SESSIONS);
-    set(KEYS.SESSIONS, [...sessions, session]);
+    });
+    bumpDataVersion();
     return session;
   },
 
-  finish(sessionId: string): Session | null {
-    const sessions = get<Session>(KEYS.SESSIONS);
-    const idx = sessions.findIndex((s) => s.id === sessionId);
-    if (idx === -1) return null;
-    const endTime = Date.now();
-    const session = sessions[idx];
-    const duration = Math.floor((endTime - session.startTime) / 1000);
-    const updated = { ...session, endTime, duration };
-    sessions[idx] = updated;
-    set(KEYS.SESSIONS, sessions);
-    return updated;
-  },
-
-  getUserSessions(userId: string): Session[] {
-    return get<Session>(KEYS.SESSIONS).filter((s) => s.userId === userId && s.endTime);
-  },
-
-  getTodaySessions(userId: string): Session[] {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    return get<Session>(KEYS.SESSIONS).filter(
-      (s) => s.userId === userId && s.endTime && s.startTime >= today.getTime()
-    );
-  },
-
-  getAllSessions(): Session[] {
-    return get<Session>(KEYS.SESSIONS);
+  async finish(sessionId: string, note?: string): Promise<Session> {
+    const session = await api.finishSession(sessionId, note);
+    bumpDataVersion();
+    return session;
   },
 };
 
-// ---- Active Timer ----
 export const TimerStore = {
   start(sessionId: string, userId: string, categoryId: string): ActiveTimer {
     const timer: ActiveTimer = {
@@ -186,6 +192,7 @@ export const TimerStore = {
       isPaused: false,
       totalPausedSeconds: 0,
     };
+
     setSingle(KEYS.ACTIVE_TIMER, timer);
     return timer;
   },
@@ -203,7 +210,11 @@ export const TimerStore = {
   resume(): void {
     const timer = getSingle<ActiveTimer>(KEYS.ACTIVE_TIMER);
     if (!timer || !timer.isPaused) return;
-    const pausedSeconds = timer.pausedAt ? Math.floor((Date.now() - timer.pausedAt) / 1000) : 0;
+
+    const pausedSeconds = timer.pausedAt
+      ? Math.floor((Date.now() - timer.pausedAt) / 1000)
+      : 0;
+
     setSingle(KEYS.ACTIVE_TIMER, {
       ...timer,
       isPaused: false,
@@ -218,90 +229,55 @@ export const TimerStore = {
 
   getElapsedSeconds(timer: ActiveTimer): number {
     const now = Date.now();
-    const raw = Math.floor((now - timer.startTime) / 1000);
-    const paused = timer.isPaused
-      ? timer.totalPausedSeconds + (timer.pausedAt ? Math.floor((now - timer.pausedAt) / 1000) : 0)
+    const totalSeconds = Math.floor((now - timer.startTime) / 1000);
+    const pausedSeconds = timer.isPaused
+      ? timer.totalPausedSeconds +
+        (timer.pausedAt ? Math.floor((now - timer.pausedAt) / 1000) : 0)
       : timer.totalPausedSeconds;
-    return Math.max(0, raw - paused);
+    return Math.max(0, totalSeconds - pausedSeconds);
   },
 };
 
-// ---- Groups ----
 export const GroupStore = {
-  create(name: string, description: string, emoji: string, createdBy: string, isPublic: boolean): Group {
-    const group: Group = {
-      id: generateId(),
+  async create(
+    name: string,
+    description: string,
+    emoji: string,
+    createdBy: string,
+    isPublic: boolean,
+    password = ""
+  ) {
+    const group = await api.createGroup({
       name,
       description,
       emoji,
       createdBy,
-      inviteCode: generateInviteCode(),
-      createdAt: Date.now(),
       isPublic,
-    };
-    const groups = get<Group>(KEYS.GROUPS);
-    set(KEYS.GROUPS, [...groups, group]);
-
-    // Add creator as owner
-    const members = get<GroupMember>(KEYS.GROUP_MEMBERS);
-    set(KEYS.GROUP_MEMBERS, [
-      ...members,
-      { groupId: group.id, userId: createdBy, joinedAt: Date.now(), role: "owner" },
-    ]);
-
+      password,
+    });
+    bumpDataVersion();
     return group;
   },
 
-  getAll(): Group[] {
-    return get<Group>(KEYS.GROUPS);
+  async joinByInviteCode(inviteCode: string, userId: string, password = "") {
+    const group = await api.joinGroup({
+      inviteCode: inviteCode.trim().toUpperCase(),
+      userId,
+      password,
+    });
+    bumpDataVersion();
+    return group;
   },
 
-  getById(id: string): Group | null {
-    return get<Group>(KEYS.GROUPS).find((g) => g.id === id) ?? null;
+  async regenerateInviteCode(groupId: string) {
+    const group = await api.regenerateInviteCode(groupId);
+    bumpDataVersion();
+    return group.inviteCode;
   },
 
-  getByInviteCode(code: string): Group | null {
-    return get<Group>(KEYS.GROUPS).find((g) => g.inviteCode === code.toUpperCase()) ?? null;
-  },
-
-  getUserGroups(userId: string): Group[] {
-    const memberRecords = get<GroupMember>(KEYS.GROUP_MEMBERS).filter((m) => m.userId === userId);
-    const groupIds = new Set(memberRecords.map((m) => m.groupId));
-    return get<Group>(KEYS.GROUPS).filter((g) => groupIds.has(g.id));
-  },
-
-  getPublicGroups(): Group[] {
-    return get<Group>(KEYS.GROUPS).filter((g) => g.isPublic);
-  },
-
-  getMembers(groupId: string): GroupMember[] {
-    return get<GroupMember>(KEYS.GROUP_MEMBERS).filter((m) => m.groupId === groupId);
-  },
-
-  isMember(groupId: string, userId: string): boolean {
-    return get<GroupMember>(KEYS.GROUP_MEMBERS).some(
-      (m) => m.groupId === groupId && m.userId === userId
-    );
-  },
-
-  join(groupId: string, userId: string): boolean {
-    if (GroupStore.isMember(groupId, userId)) return false;
-    const members = get<GroupMember>(KEYS.GROUP_MEMBERS);
-    set(KEYS.GROUP_MEMBERS, [...members, { groupId, userId, joinedAt: Date.now(), role: "member" }]);
-    return true;
-  },
-
-  leave(groupId: string, userId: string): void {
-    const members = get<GroupMember>(KEYS.GROUP_MEMBERS).filter(
-      (m) => !(m.groupId === groupId && m.userId === userId)
-    );
-    set(KEYS.GROUP_MEMBERS, members);
-  },
-
-  regenerateInviteCode(groupId: string): string {
-    const groups = get<Group>(KEYS.GROUPS);
-    const code = generateInviteCode();
-    set(KEYS.GROUPS, groups.map((g) => (g.id === groupId ? { ...g, inviteCode: code } : g)));
-    return code;
+  async removeMember(groupId: string, actorUserId: string, targetUserId: string) {
+    const groupDetail = await api.removeGroupMember(groupId, { actorUserId, targetUserId });
+    bumpDataVersion();
+    return groupDetail;
   },
 };

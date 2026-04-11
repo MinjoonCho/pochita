@@ -4,7 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:web": "next dev",
+    "backend:start": "./scripts/run-backend.sh",
+    "backend:health": "./scripts/check-backend-health.sh",
     "build": "next build",
+    "build:webpack": "next build --webpack",
     "start": "next start",
     "lint": "eslint"
   },

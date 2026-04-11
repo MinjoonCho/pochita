@@ -17,12 +17,18 @@
   --pochita-orange-light: #FF8A3D;
   --pochita-orange-dark: #D44200;
   --pochita-orange-glow: rgba(255, 90, 0, 0.1);
-  
+
   --pochita-bg: #F9FAFB;
   --pochita-card: #FFFFFF;
-  --pochita-text: #191F28; /* Soft rich black */
-  --pochita-text-secondary: #8B95A1; /* Soft gray */
-  --pochita-border: rgba(0, 0, 0, 0.05); /* Extremely subtle border */
+  --pochita-text: #191F28;
+  /* Soft rich black */
+  --pochita-text-secondary: #8B95A1;
+  /* Soft gray */
+  --pochita-border: rgba(0, 0, 0, 0.05);
+  /* Extremely subtle border */
+  --page-gutter: 11px;
+  --section-gap: 12px;
+  --block-gap: 9px;
 }
 
 body.dark {
@@ -31,7 +37,7 @@ body.dark {
   --pochita-orange-light: #FF8C33;
   --pochita-orange-dark: #CC5500;
   --pochita-orange-glow: rgba(255, 107, 0, 0.6);
-  
+
   --pochita-bg: #0A0A0A;
   --pochita-card: #141414;
   --pochita-text: #F5F5F5;
@@ -39,9 +45,9 @@ body.dark {
   --pochita-border: #333333;
 }
 
-* {
-  margin: 0;
-  padding: 0;
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -63,63 +69,134 @@ body {
   transition: all 0.4s ease;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+button,
+label {
+  letter-spacing: -0.03em;
+}
+
 /* Subtle glow for dark mode */
 body.dark {
-  box-shadow: 0 0 0 1px rgba(255,107,0,0.08), 0 0 80px rgba(255,107,0,0.04);
+  box-shadow: 0 0 0 1px rgba(255, 107, 0, 0.08), 0 0 80px rgba(255, 107, 0, 0.04);
 }
 
 @media (min-width: 500px) {
   html {
     background: #EAECEF;
   }
+
   body {
     background: var(--pochita-bg);
-    box-shadow: 0 4px 60px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 60px rgba(0, 0, 0, 0.05);
   }
+
   html:has(body.dark) {
     background: radial-gradient(ellipse at top, #120800 0%, #050505 70%);
   }
+
   body.dark {
     box-shadow:
-      0 0 0 1px rgba(255,107,0,0.12),
-      -20px 0 60px rgba(0,0,0,0.6),
-      20px 0 60px rgba(0,0,0,0.6);
+      0 0 0 1px rgba(255, 107, 0, 0.12),
+      -20px 0 60px rgba(0, 0, 0, 0.6),
+      20px 0 60px rgba(0, 0, 0, 0.6);
   }
 }
 
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--pochita-orange); border-radius: 2px; }
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--pochita-orange);
+  border-radius: 2px;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
 
 /* ============================
    Keyframe Animations
    ============================ */
 
 @keyframes spin-slow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes slide-up {
-  from { transform: translateY(60px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(60px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 @keyframes fade-in {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes bounce-in {
-  0% { transform: scale(0.3); opacity: 0; }
-  50% { transform: scale(1.05); }
-  70% { transform: scale(0.9); }
-  100% { transform: scale(1); opacity: 1; }
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+
+  70% {
+    transform: scale(0.9);
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 @keyframes glow-pulse {
-  0%, 100% { text-shadow: 0 0 10px var(--pochita-orange), 0 0 20px var(--pochita-orange); }
-  50% { text-shadow: 0 0 20px var(--pochita-orange), 0 0 40px var(--pochita-orange), 0 0 60px var(--pochita-orange-dark); }
+
+  0%,
+  100% {
+    text-shadow: 0 0 10px var(--pochita-orange), 0 0 20px var(--pochita-orange);
+  }
+
+  50% {
+    text-shadow: 0 0 20px var(--pochita-orange), 0 0 40px var(--pochita-orange), 0 0 60px var(--pochita-orange-dark);
+  }
 }
 
 /* ============================
@@ -148,11 +225,111 @@ body.dark {
 }
 
 .timer-digit {
-  font-family: 'Black Han Sans', monospace;
+  font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
   font-feature-settings: 'tnum';
-  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.04em;
+}
+
+.headline-face {
+  font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.05em;
 }
 
 .active\:scale-98:active {
   transform: scale(0.98);
+}
+
+.page-shell {
+  padding-left: var(--page-gutter);
+  padding-right: var(--page-gutter);
+}
+
+.page-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+}
+
+.block-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--block-gap);
+}
+
+.section-card {
+  background: var(--pochita-card);
+  border: 1px solid var(--pochita-border);
+  border-radius: 28px;
+  padding: 12px;
+  box-shadow: 0 8px 28px rgba(15, 23, 42, 0.05);
+}
+
+.floating-action-bar {
+  position: sticky;
+  bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+  padding-top: 8px;
+  padding-bottom: 4px;
+  background: linear-gradient(180deg, rgba(249, 250, 251, 0) 0%, rgba(249, 250, 251, 0.94) 24%, rgba(249, 250, 251, 1) 100%);
+}
+
+body.dark .floating-action-bar {
+  background: linear-gradient(180deg, rgba(10, 10, 10, 0) 0%, rgba(10, 10, 10, 0.92) 24%, rgba(10, 10, 10, 1) 100%);
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.field-label {
+  display: block;
+  margin-left: 4px;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+  color: var(--pochita-text-secondary);
+}
+
+.field-input,
+.field-textarea {
+  width: 100%;
+  border-radius: 24px;
+  border: 1px solid var(--pochita-border);
+  background: white;
+  color: var(--pochita-text);
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.field-input {
+  min-height: 48px;
+  padding: 9px 10px;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.field-textarea {
+  min-height: 120px;
+  padding: 10px;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.4;
+  resize: none;
+}
+
+.field-input::placeholder,
+.field-textarea::placeholder {
+  color: #9aa3af;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.field-input:focus,
+.field-textarea:focus {
+  box-shadow: 0 0 0 2px var(--pochita-orange);
 }

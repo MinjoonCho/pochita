@@ -5,9 +5,11 @@
 export interface User {
   id: string;
   email: string;
-  passwordHash: string;
+  passwordHash?: string;
+  authProvider?: "credentials" | "google";
   nickname: string;
   university: string;
+  major: string;
   year: string; // '1학년', '2학년', '3학년', '4학년', '대학원', '졸업생'
   avatarEmoji: string;
   createdAt: number;
@@ -32,6 +34,9 @@ export interface Group {
   inviteCode: string;
   createdAt: number;
   isPublic: boolean;
+  requiresPassword: boolean;
+  passwordHash?: string;
+  memberCount?: number;
 }
 
 export interface GroupMember {
@@ -49,6 +54,23 @@ export interface ActiveTimer {
   isPaused: boolean;
   pausedAt?: number;
   totalPausedSeconds: number;
+}
+
+const INCOMPLETE_PROFILE_VALUES = new Set([
+  "",
+  "학교 미설정",
+  "전공 미설정",
+  "학년 미설정",
+]);
+
+export function isUserProfileIncomplete(user: User | null | undefined): boolean {
+  if (!user) return false;
+
+  return (
+    INCOMPLETE_PROFILE_VALUES.has(user.university.trim()) ||
+    INCOMPLETE_PROFILE_VALUES.has(user.major.trim()) ||
+    INCOMPLETE_PROFILE_VALUES.has(user.year.trim())
+  );
 }
 
 export const YEARS = ["1학년", "2학년", "3학년", "4학년", "대학원", "졸업생"];
