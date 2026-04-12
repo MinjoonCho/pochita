@@ -237,6 +237,18 @@ body.dark {
   letter-spacing: -0.05em;
 }
 
+.emoji-glyph {
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.emoji-glyph {
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+}
+
 .active\:scale-98:active {
   transform: scale(0.98);
 }
