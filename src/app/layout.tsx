@@ -3,12 +3,12 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "포치타 🔥 | 포기한 치타의 타이머",
-  description: "열공 말고 딴짓. 당신의 딴짓 기록을 남깁니다. 전국 대학 딴짓 최강자를 가립니다.",
-  keywords: "딴짓, 타이머, 대학생, 학점멸망전, 포치타, 시험기간",
+  title: "포치타 | 시험기간 딴짓 기록 앱",
+  description: "시험기간의 딴짓 시간을 기록하고, 통계와 랭킹으로 돌아보게 해주는 서비스",
+  keywords: "포치타, 딴짓, 시험기간, 타이머, 집중, 통계, 랭킹",
   openGraph: {
-    title: "포치타 🔥 | 포기한 치타의 타이머",
-    description: "열공 말고 딴짓. 당신의 딴짓 기록을 남깁니다.",
+    title: "포치타 | 시험기간 딴짓 기록 앱",
+    description: "시험기간의 딴짓 시간을 기록하고, 통계와 랭킹으로 돌아보게 해주는 서비스",
     type: "website",
   },
 };
@@ -36,9 +36,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="max-w-[430px] mx-auto relative">
-        {children}
-      </body>
+      <body className="max-w-[430px] mx-auto relative">{children}</body>
     </html>
   );
 }

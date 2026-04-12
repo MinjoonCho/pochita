@@ -60,7 +60,15 @@ html {
 body {
   background: var(--pochita-bg);
   color: var(--pochita-text);
-  font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+  font-family:
+    'Noto Sans KR',
+    'Apple SD Gothic Neo',
+    'Malgun Gothic',
+    'Apple Color Emoji',
+    'Segoe UI Emoji',
+    'Segoe UI Symbol',
+    'Noto Color Emoji',
+    sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
   max-width: 430px;
@@ -127,6 +135,20 @@ body.dark {
 
 .no-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+.swipe-pager {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+.swipe-slide {
+  width: 100%;
+  flex: 0 0 100%;
+  scroll-snap-align: start;
 }
 
 /* ============================
@@ -225,14 +247,30 @@ body.dark {
 }
 
 .timer-digit {
-  font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+  font-family:
+    'Noto Sans KR',
+    'Apple SD Gothic Neo',
+    'Malgun Gothic',
+    'Apple Color Emoji',
+    'Segoe UI Emoji',
+    'Segoe UI Symbol',
+    'Noto Color Emoji',
+    sans-serif;
   font-feature-settings: 'tnum';
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.04em;
 }
 
 .headline-face {
-  font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+  font-family:
+    'Noto Sans KR',
+    'Apple SD Gothic Neo',
+    'Malgun Gothic',
+    'Apple Color Emoji',
+    'Segoe UI Emoji',
+    'Segoe UI Symbol',
+    'Noto Color Emoji',
+    sans-serif;
   font-weight: 700;
   letter-spacing: -0.05em;
 }

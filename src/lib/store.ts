@@ -135,11 +135,15 @@ export const AuthStore = {
       const user = await api.getUser(currentUser.id);
       setSingle(KEYS.CURRENT_USER, user);
       return user;
-    } catch {
-      setSingle(KEYS.CURRENT_USER, null);
-      setSingle(KEYS.ACTIVE_TIMER, null);
-      bumpDataVersion();
-      return null;
+    } catch (error) {
+      if (isMissingUserError(error)) {
+        setSingle(KEYS.CURRENT_USER, null);
+        setSingle(KEYS.ACTIVE_TIMER, null);
+        bumpDataVersion();
+        return null;
+      }
+
+      return currentUser;
     }
   },
 

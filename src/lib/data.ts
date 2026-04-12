@@ -1,54 +1,35 @@
 export const CATEGORIES = [
-  { id: "game",      emoji: "🎮", label: "게임",       color: "#FF4444", description: "페이커도 가끔 공부하듯이 저희도 가끔 게임하는 거죠" },
-  { id: "shortform", emoji: "📱", label: "숏폼",       color: "#FF6B00", description: "댓글에 '포치타' 남겨주시면 DM 보내드리겠습니다" },
-  { id: "ott",       emoji: "📺", label: "OTT",        color: "#E50914", description: "벚꽃도 졌겠다, 환연 다시 정주행 할까요" },
-  { id: "drink",     emoji: "🍺", label: "음주",       color: "#FFB800", description: "복소사 한 잔 어떠세요" },
-  { id: "hangout",   emoji: "👥", label: "친구랑 놀기",color: "#10B981", description: "혼자 망할 수는 없다" },
-  { id: "lazy",      emoji: "😴", label: "무기력",     color: "#6B7280", description: "하면서 이 사이트는 또 잘 들어오셨네요" },
+  { id: "game", label: "게임", emoji: "🎮", color: "#FF4444", description: "잠깐만 한다고 켰다가 가장 오래 붙잡히는 순간" },
+  { id: "shortform", label: "숏폼", emoji: "📱", color: "#FF6B00", description: "한 편만 보려다 무한 스크롤에 빠지는 시간" },
+  { id: "ott", label: "OTT", emoji: "📺", color: "#E50914", description: "시험기간엔 더 재밌어 보이는 드라마와 예능" },
+  { id: "drink", label: "음주", emoji: "🍺", color: "#FFB800", description: "공부 대신 약속이 생겨버린 밤" },
+  { id: "hangout", label: "친구랑 놀기", emoji: "👥", color: "#10B981", description: "잠깐 보자고 했는데 하루가 사라지는 모임" },
+  { id: "lazy", label: "멍때리기", emoji: "😴", color: "#6B7280", description: "아무것도 안 했는데 시간은 흘러가는 상태" },
 ] as const;
 
 export type CategoryId = typeof CATEGORIES[number]["id"];
 
 export const SNARKY_MESSAGES = [
-  "역시... 오늘도 당신은 위대하십니다 👑",
-  "교수님이 우는 소리가 들리시나요? 🎶",
-  "학점 멸망전 참가 확인 완료 ✅",
-  "당신의 취업문은 지금 닫히는 중... 🚪",
-  "시험은 나중에 봐도 되잖아요? 🤷",
-  "오늘 딴짓한 시간, 내일 후회로 돌아옵니다 😌",
-  "포치타가 당신을 응원합니다 (진심으로)",
-  "이 정도면 딴짓 장학금 신청해봐요",
-  "학사경고? 그거 훈장이죠 🏅",
-  "지금쯤 도서관 친구들은 공부 중... 🤫",
+  "지금도 괜찮다고 생각하면 시험지가 울어요 😶",
+  "딴짓에도 재능이 있다는 걸 또 증명했네요 🎯",
+  "한 번만 더는 늘 생각보다 길어요 📉",
+  "시험기간의 시간은 평소보다 훨씬 비싸요 ⏳",
+  "조금만 쉬자는 말이 가장 위험해요 😵",
 ];
 
 export const FOCUS_OUT_MESSAGES = [
-  "공부하러 가시는 거 아니죠? 딴짓 마저 하세요! 🔥",
-  "잠깐, 도망가지 말고 더 딴짓하세요 😤",
-  "어디 가세요?? 아직 더 눌러야죠 📱",
-  "포치타가 지켜보고 있습니다 👀",
-  "지금 공부하면 진다! 돌아와요~ 🙏",
-];
-
-export const DEMO_UNIVERSITY_RANKING = [
-  { name: "연세대학교",   totalMinutes: 8547 },
-  { name: "고려대학교",   totalMinutes: 7923 },
-  { name: "서울대학교",   totalMinutes: 6891 },
-  { name: "성균관대학교", totalMinutes: 6234 },
-  { name: "한양대학교",   totalMinutes: 5876 },
-  { name: "중앙대학교",   totalMinutes: 5543 },
-  { name: "경희대학교",   totalMinutes: 5102 },
-  { name: "이화여자대학교",totalMinutes: 4987 },
-  { name: "서강대학교",   totalMinutes: 4765 },
-  { name: "건국대학교",   totalMinutes: 4321 },
+  "돌아가도 늦지 않았어요. 이제 정말 공부할까요?",
+  "포치타가 보고 있어요. 슬슬 복귀할 시간이에요 👀",
+  "딴짓 기록은 충분해요. 이제 집중할 차례예요 🔥",
+  "한 번 끊어내면 생각보다 금방 다시 몰입돼요.",
 ];
 
 export function formatTime(seconds: number): string {
   const h = Math.floor(seconds / 3600);
   const m = Math.floor((seconds % 3600) / 60);
   const s = seconds % 60;
-  if (h > 0) return `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
-  return `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+  if (h > 0) return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
 
 export function formatTimeKorean(seconds: number): string {
@@ -70,20 +51,16 @@ export function generateAcrosticPoem(
 ): { char: string; line: string }[] {
   const sets = [
     [
-      { char: "포", line: `포기한 순간부터 시작되는 진짜 인생` },
-      { char: "치", line: `치열하게 ${categoryLabel}한 ${timeStr}의 역사` },
-      { char: "타", line: `타이머 끝에서도 빛나는 당신의 자유` },
+      { char: "포", line: "포기하지 않고 다시 시작하는 것도 실력이에요" },
+      { char: "치", line: `치열하게 쌓인 ${categoryLabel} ${timeStr}도 결국 기록이에요` },
+      { char: "타", line: "타이머를 끄는 순간부터 다시 집중할 수 있어요" },
     ],
     [
-      { char: "포", line: `포기가 패배가 아닌 용기임을 알았다` },
-      { char: "치", line: `치솟는 즐거움, ${categoryLabel}의 황홀경` },
-      { char: "타", line: `타임라인에 새겨질 오늘의 전설` },
-    ],
-    [
-      { char: "포", line: `포기란 새로운 시작의 다른 이름` },
-      { char: "치", line: `치열한 딴짓으로 쌓은 ${timeStr}의 내공` },
-      { char: "타", line: `타이밍 좋게 쉬어간 오늘이 좋다` },
+      { char: "포", line: "포착된 시간은 외면할 수 없죠" },
+      { char: "치", line: `치명적인 ${categoryLabel}의 유혹도 이제는 숫자로 보여요` },
+      { char: "타", line: "타협은 여기까지, 이제는 공부할 시간이에요" },
     ],
   ];
+
   return sets[Math.floor(Math.random() * sets.length)];
 }
