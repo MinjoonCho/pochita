@@ -60,7 +60,7 @@ html {
 body {
   background: var(--pochita-bg);
   color: var(--pochita-text);
-  font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+  font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
   max-width: 430px;
@@ -225,14 +225,14 @@ body.dark {
 }
 
 .timer-digit {
-  font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+  font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
   font-feature-settings: 'tnum';
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.04em;
 }
 
 .headline-face {
-  font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+  font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
   font-weight: 700;
   letter-spacing: -0.05em;
 }
