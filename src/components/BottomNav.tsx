@@ -2,16 +2,17 @@
 import { usePathname, useRouter } from "next/navigation";
 
 const TABS = [
-  { id: "home", label: "홈", icon: "🏠", href: "/home" },
-  { id: "groups", label: "그룹", icon: "👥", href: "/groups" },
-  { id: "ranking", label: "랭킹", icon: "🏆", href: "/ranking" },
-  { id: "profile", label: "프로필", icon: "🙂", href: "/profile" },
+  { id: "home",    label: "홈",    icon: "⏱",  href: "/home"   },
+  { id: "groups",  label: "그룹",  icon: "👥",  href: "/groups" },
+  { id: "ranking", label: "랭킹",  icon: "🏆",  href: "/ranking"},
+  { id: "profile", label: "더보기",icon: "👤",  href: "/profile"},
 ] as const;
 
 export default function BottomNav() {
   const pathname = usePathname();
   const router = useRouter();
-  const activeTab = TABS.find((tab) => pathname.startsWith(tab.href))?.id || "home";
+
+  const activeTab = TABS.find(t => pathname.startsWith(t.href))?.id || "home";
 
   return (
     <nav
@@ -22,7 +23,7 @@ export default function BottomNav() {
         height: "calc(82px + env(safe-area-inset-bottom, 0px))",
       }}
     >
-      {TABS.map((tab) => {
+      {TABS.map(tab => {
         const isActive = activeTab === tab.id;
         return (
           <button
@@ -30,11 +31,16 @@ export default function BottomNav() {
             onClick={() => router.push(tab.href)}
             className="flex flex-col items-center justify-center gap-1.5 flex-1 h-full transition-all group active:scale-90"
           >
-            <div className={`w-12 h-1.5 rounded-full mb-1 transition-all duration-300 ${isActive ? "bg-[var(--pochita-orange)] scale-x-100" : "bg-transparent scale-x-0"}`} />
-            <span className={`text-[22px] transition-all duration-300 ${isActive ? "scale-110" : "grayscale opacity-40"}`}>
+            <div className={`
+              w-12 h-1.5 rounded-full mb-1 transition-all duration-300
+              ${isActive ? "bg-[var(--pochita-orange)] scale-x-100" : "bg-transparent scale-x-0"}
+            `} />
+            <span className={`text-[22px] transition-all duration-300 ${isActive ? "scale-110" : "grayscale opacity-30"}`}>
               {tab.icon}
             </span>
-            <span className={`text-[10px] uppercase tracking-widest transition-colors duration-300 ${isActive ? "text-[var(--pochita-text)] font-semibold" : "text-gray-300 font-medium"}`}>
+            <span
+              className={`text-[10px] uppercase tracking-widest transition-colors duration-300 ${isActive ? "text-[var(--pochita-text)] font-semibold" : "text-gray-300 font-medium"}`}
+            >
               {tab.label}
             </span>
           </button>

@@ -25,14 +25,6 @@ function useStoredValue<T>(key: string, fallback: T): T {
   return parseSnapshot(raw, fallback);
 }
 
-function useHydrated(): boolean {
-  return useSyncExternalStore(
-    () => () => undefined,
-    () => true,
-    () => false
-  );
-}
-
 export function useAuthUser(): User | null {
   return useStoredValue<User | null>(KEYS.CURRENT_USER, null);
 }
@@ -143,7 +135,6 @@ export function useRequireAuth(): User | null {
   const router = useRouter();
   const user = useAuthUser();
   const pathname = usePathname();
-  const hydrated = useHydrated();
 
   useEffect(() => {
     if (!user) return;
@@ -151,8 +142,6 @@ export function useRequireAuth(): User | null {
   }, [user]);
 
   useEffect(() => {
-    if (!hydrated) return;
-
     if (!user) {
       const query = typeof window === "undefined" ? "" : window.location.search.slice(1);
       const nextPath = query ? `${pathname}?${query}` : pathname;
@@ -165,25 +154,22 @@ export function useRequireAuth(): User | null {
       const nextPath = query ? `${pathname}?${query}` : pathname;
       router.replace(`/signup/detail?completeProfile=1&next=${encodeURIComponent(nextPath)}`);
     }
-  }, [hydrated, pathname, router, user]);
+  }, [pathname, router, user]);
 
-  return hydrated ? user : null;
+  return user;
 }
 
 export function useRedirectIfAuth(): void {
   const router = useRouter();
   const pathname = usePathname();
   const user = useAuthUser();
-  const hydrated = useHydrated();
 
   useEffect(() => {
-    if (!hydrated) return;
-
     if (user && (pathname === "/" || pathname === "/login" || pathname === "/signup")) {
       const nextPath = typeof window === "undefined"
         ? null
         : new URLSearchParams(window.location.search).get("next");
       router.replace(isUserProfileIncomplete(user) ? "/signup/detail?completeProfile=1" : (nextPath ?? "/home"));
     }
-  }, [hydrated, pathname, router, user]);
+  }, [pathname, router, user]);
 }
