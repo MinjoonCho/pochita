@@ -1,5 +1,6 @@
 import { api } from "./api";
 import { signInWithGoogle } from "./google-auth";
+import { normalizeUniversityName } from "./types";
 import type { ActiveTimer, Session, User } from "./types";
 
 export const KEYS = {
@@ -87,7 +88,11 @@ export const AuthStore = {
     const user = await api.register({
       email: normalizeEmail(email),
       password,
-      ...profile,
+      nickname: profile.nickname,
+      university: normalizeUniversityName(profile.university),
+      major: profile.major,
+      year: profile.year,
+      avatarEmoji: profile.avatarEmoji,
     });
     setSingle(KEYS.CURRENT_USER, user);
     bumpDataVersion();
@@ -148,7 +153,10 @@ export const AuthStore = {
     if (!currentUser) return null;
 
     try {
-      const user = await api.updateUser(currentUser.id, updates);
+      const user = await api.updateUser(currentUser.id, {
+        ...updates,
+        university: normalizeUniversityName(updates.university),
+      });
       setSingle(KEYS.CURRENT_USER, user);
       bumpDataVersion();
       return user;

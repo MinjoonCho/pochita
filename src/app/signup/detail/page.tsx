@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthUser } from "@/lib/hooks";
 import { AuthStore } from "@/lib/store";
-import { AVATAR_EMOJIS, UNIVERSITIES, YEARS, isUserProfileIncomplete } from "@/lib/types";
+import { AVATAR_EMOJIS, UNIVERSITIES, YEARS, isUserProfileIncomplete, matchesUniversityQuery, normalizeUniversityName } from "@/lib/types";
 
 export default function SignupDetailPage() {
   const router = useRouter();
@@ -25,7 +25,7 @@ export default function SignupDetailPage() {
   const [error, setError] = useState("");
 
   const filteredUnis = useMemo(
-    () => UNIVERSITIES.filter((u) => u.includes(schoolInput)).slice(0, 10),
+    () => UNIVERSITIES.filter((u) => matchesUniversityQuery(u, schoolInput)).slice(0, 10),
     [schoolInput]
   );
 
@@ -85,7 +85,7 @@ export default function SignupDetailPage() {
   const handleFinish = async () => {
     const userProfile = {
       nickname: effectiveName,
-      university: school,
+      university: normalizeUniversityName(school),
       major,
       year,
       avatarEmoji: effectiveAvatarEmoji,

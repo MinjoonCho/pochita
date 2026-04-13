@@ -4,6 +4,7 @@ import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formatTime, CATEGORIES } from "@/lib/data";
 import { SessionStore, TimerStore } from "@/lib/store";
+import { normalizeUniversityName } from "@/lib/types";
 import {
   useActiveTimer,
   useGroupDetail,
@@ -181,7 +182,7 @@ function TimerContent() {
                   <div key={row.id} className="flex items-center justify-between p-4 rounded-2xl bg-white/5">
                     <div className="flex items-center gap-3">
                       <span className="text-xs font-semibold text-gray-500">{index + 1}위</span>
-                      <span className={`text-sm font-semibold ${row.name === user.university ? "text-white" : "text-gray-300"}`}>
+                      <span className={`text-sm font-semibold ${normalizeUniversityName(row.name) === normalizeUniversityName(user.university) ? "text-white" : "text-gray-300"}`}>
                         {row.name}
                       </span>
                     </div>

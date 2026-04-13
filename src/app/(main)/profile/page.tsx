@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthStore } from "@/lib/store";
 import { formatTimeKorean } from "@/lib/data";
-import { AVATAR_EMOJIS, UNIVERSITIES, YEARS } from "@/lib/types";
+import { AVATAR_EMOJIS, UNIVERSITIES, YEARS, matchesUniversityQuery, normalizeUniversityName } from "@/lib/types";
 import { useGroups, useRequireAuth, useSessions } from "@/lib/hooks";
 import { getTotalSeconds, getUserSessions } from "@/lib/analytics";
 
@@ -28,7 +28,7 @@ export default function ProfilePage() {
 
   const activeUser = user;
 
-  const filteredUnis = UNIVERSITIES.filter((item) => item.includes(uniInput)).slice(0, 5);
+  const filteredUnis = UNIVERSITIES.filter((item) => matchesUniversityQuery(item, uniInput)).slice(0, 5);
 
   if (!activeUser) return null;
 
@@ -52,7 +52,7 @@ export default function ProfilePage() {
 
       const updated = await AuthStore.updateCurrentUser({
         nickname: nickname.trim() || activeUser.nickname,
-        university: university.trim() || uniInput.trim() || activeUser.university,
+        university: normalizeUniversityName(university.trim() || uniInput.trim() || activeUser.university),
         major: major.trim() || activeUser.major,
         year: year || activeUser.year,
         avatarEmoji: avatarEmoji || activeUser.avatarEmoji,

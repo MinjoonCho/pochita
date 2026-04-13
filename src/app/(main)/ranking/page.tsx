@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { formatTimeKorean } from "@/lib/data";
 import { useRankings, useRequireAuth } from "@/lib/hooks";
+import { normalizeUniversityName } from "@/lib/types";
 
 type RankTab = "university" | "group" | "personal" | "category";
 
@@ -59,7 +60,7 @@ export default function RankingPage() {
                 <span className={`text-lg font-semibold ${index < 3 ? "text-[var(--pochita-orange)]" : "text-gray-300"}`}>{index + 1}</span>
                 <div className="text-left">
                   <span className="text-sm font-semibold">{row.name}</span>
-                  {row.name === user.university && <p className="text-[10px] text-[var(--pochita-orange)] font-semibold mt-1">내 학교</p>}
+                  {normalizeUniversityName(row.name) === normalizeUniversityName(user.university) && <p className="text-[10px] text-[var(--pochita-orange)] font-semibold mt-1">내 학교</p>}
                 </div>
               </div>
               <span className="text-sm font-semibold timer-digit">{row.minutes.toLocaleString()}m</span>
